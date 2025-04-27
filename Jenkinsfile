@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clone repo') {
       steps {
-        git 'https://ton-repo.git' // ➡️ Remplacer par ton vrai Git repo
+        git credentialsId: 'github-creds', url: 'https://github.com/Dhafer84/Test.git'
       }
     }
     stage('Build Docker Image') {
