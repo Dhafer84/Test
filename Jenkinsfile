@@ -1,29 +1,56 @@
 pipeline {
-    agent any
+    agent none
+
     environment {
         KUBECONFIG = '/etc/rancher/k3s/k3s.yaml'
     }
+
     stages {
-        stage('Clone repo') {
+        stage('Checkout Code depuis GitHub') {
+            agent { label 'vm1' }
             steps {
-              git branch: 'main', credentialsId: 'github-creds', url: 'https://github.com/Dhafer84/Test.git'
+                echo "🔄 Clonage du code depuis GitHub"
+                git branch: 'main', url: 'https://github.com/Dhafer84/Test.git', credentialsId: 'github-creds'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build Docker Image sur VM1') {
+            agent { label 'vm1' }
             steps {
+                echo "🔨 Construction de l'image Docker sur VM1"
                 sh '''
-                docker build -t test-k3s-nginx .
-                docker tag test-k3s-nginx localhost:5000/test-k3s-nginx
-                docker push localhost:5000/test-k3s-nginx
+                    docker build -t uncledhafer/test-k3s-app:latest .
                 '''
             }
         }
 
-        stage('Deploy to K3s') {
+        stage('Push Docker Image vers DockerHub') {
+            agent { label 'vm1' }
             steps {
+                echo "📤 Pousser l'image Docker sur DockerHub"
+                withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
+                    sh 'docker push uncledhafer/test-k3s-app:latest'
+                }
+            }
+        }
+
+        stage('Déploiement sur K3s') {
+            agent { label 'vm1' }
+            steps {
+                echo "🚀 Déploiement sur le cluster K3s"
                 sh '''
-                kubectl apply -f deployment.yaml
+                    kubectl delete deployment my-app --ignore-not-found=true
+                    kubectl apply -f deployment.yaml
+                '''
+            }
+        }
+
+        stage('Validation sur VM2') {
+            agent { label 'vm2' }
+            steps {
+                echo "🖥️ Vérification sur la deuxième VM (Docker installé)"
+                sh '''
+                    docker version
                 '''
             }
         }
