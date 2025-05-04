@@ -2,7 +2,6 @@ pipeline {
     agent none
 
     environment {
-        KUBECONFIG = '/etc/rancher/k3s/k3s.yaml'
         DOCKERHUB_CREDENTIALS = 'dockerhub-creds'
     }
 
@@ -37,6 +36,9 @@ pipeline {
 
         stage('Déploiement sur K3s') {
             agent { label 'vm1' }
+            environment {
+                KUBECONFIG = '/etc/rancher/k3s/k3s.yaml'
+            }
             steps {
                 echo "🚀 Déploiement sur le cluster K3s"
                 sh '''
