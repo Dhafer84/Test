@@ -39,8 +39,8 @@ pipeline {
             steps {
                 echo "🚀 Déploiement sur le cluster K3s"
                 sh '''
-                    kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml delete deployment my-app --ignore-not-found=true
-                    kubectl --kubeconfig=/etc/rancher/k3s/k3s.yaml apply -f deployment.yaml
+                    kubectl --kubeconfig=/opt/jenkins/agent/.kube/config delete deployment my-app --ignore-not-found=true
+                    kubectl --kubeconfig=/opt/jenkins/agent/.kube/config apply -f deployment.yaml
                 '''
             }
         }
