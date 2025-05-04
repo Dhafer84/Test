@@ -30,7 +30,8 @@ spec:
     app: my-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 80       # Port interne au cluster
+      targetPort: 80 # Port du conteneur
+      nodePort: 30080 # Port sur lequel on accèdera de l'extérieur
   type: NodePort
 
