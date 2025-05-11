@@ -7,15 +7,15 @@ pipeline {
 
     stages {
         stage('Checkout Code depuis GitHub') {
-            agent { label 'vm1' }
+            agent { label 'vm4' }
             steps {
                 echo "🔄 Clonage du code depuis GitHub"
                 git branch: 'main', url: 'https://github.com/Dhafer84/Test.git', credentialsId: 'github-creds'
             }
         }
 
-        stage('Build Docker Image sur VM1') {
-            agent { label 'vm1' }
+        stage('Build Docker Image sur VM4') {
+            agent { label 'vm4' }
             steps {
                 echo "🔨 Construction de l'image Docker sur VM1"
                 sh '''
@@ -35,7 +35,7 @@ pipeline {
         }
 
         stage('Déploiement sur K3s') {
-            agent { label 'vm1' }
+            agent { label 'vm4' }
             steps {
                 echo "🚀 Déploiement sur le cluster K3s"
                 sh '''
@@ -45,8 +45,8 @@ pipeline {
             }
         }
 
-        stage('Validation sur VM2') {
-            agent { label 'vm2' }
+        stage('Validation sur VM5') {
+            agent { label 'vm5' }
             steps {
                 echo "🖥️ Vérification sur la deuxième VM (Docker installé)"
                 sh '''
