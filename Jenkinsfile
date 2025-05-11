@@ -17,7 +17,7 @@ pipeline {
         stage('Build Docker Image sur VM4') {
             agent { label 'vm4' }
             steps {
-                echo "🔨 Construction de l'image Docker sur VM1"
+                echo "🔨 Construction de l'image Docker sur VM4"
                 sh '''
                     docker build -t uncledhafer/test-k3s-app:latest .
                 '''
@@ -25,7 +25,7 @@ pipeline {
         }
 
         stage('Push Docker Image vers DockerHub') {
-            agent { label 'vm1' }
+            agent { label 'vm4' }
             steps {
                 echo "📤 Pousser l'image Docker sur DockerHub"
                 withDockerRegistry([credentialsId: 'dockerhub-creds', url: '']) {
